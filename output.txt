@@ -1,0 +1,29 @@
+#!/usr/bin/perl
+use warnings;
+use strict;
+
+open (jenkins, '<', \$jenkins) or die "$!";
+while (my $line = <jenkins>)
+{
+   chomp $line;
+   my ($key,@vals) = split ',',$line;
+   $hash{$key} = [@vals];
+}
+
+# process docker, modify the memory hash table
+
+open (docker, '<', \$docker) or die "$!";
+while (my $line = <docker>)
+{
+   chomp $line;
+   my ($key,$val1) = split ',',$line;
+   $hash{$key}[0] = $val1 if $hash{$key};
+}
+
+# dump the hash table
+
+foreach my $key (sort keys %hash)
+{
+   print "$key,", join(",",@{$hash{$key}}),"\n";
+}
+
